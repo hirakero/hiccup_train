@@ -7,7 +7,8 @@
                  [duct/module.logging "0.5.0"]
                  [duct/module.web "0.7.3"]
                  [metosin/reitit "0.5.18"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [incanter "1.9.3"]]
   :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot hiccup-train.main
   :resource-paths ["resources" "target/resources"]

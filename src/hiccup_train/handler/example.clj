@@ -6,8 +6,12 @@
               [ring.util.response :as res]
               [reitit.ring.middleware.parameters :as params]
               [hiccup.core :as h]
-              [hiccup.form :as f]
-              [ring.util.anti-forgery]))
+              [hiccup.form :as hf]
+              [hiccup.page :as hp]
+              [ring.util.anti-forgery]
+              [incanter.core :as incanter]
+              [incanter.charts :as charts]
+              ))
 
 (defn html [body]
   (-> body
@@ -37,19 +41,31 @@
 (defn todo-new-view [_]
   (html (h/html [:section.card
                  [:h2 "TODO 追加"]
-                 (f/form-to
+                 (hf/form-to
                   [:post "/result"]
                   (ring.util.anti-forgery/anti-forgery-field)
                   [:p "anti"]
                   [:input {:name :title :placeholder "TODO を入力してください"}]
                   [:button.bg-blue "追加する"])])))
 
+
+(defn make-graph[file_name]
+  (let [my-plot (charts/function-plot incanter/sin -10 10)]
+    (incanter/save my-plot "plot.png"))  )
+
+(defn graph [_]
+  (make-graph "")
+  (html (h/html
+         [:div "test"]
+         [:img {:src "plot.png"}])))
+
 (defmethod ig/init-key :hiccup-train.handler/example [_ options]
   (ring/ring-handler
    (ring/router
     [["/" {:get index}]
      ["/form" {:get todo-new-view}]
-     ["/result" {:post result}]]
+     ["/result" {:post result}]
+     ["/graph" {:get graph}]]
     {:data {:muuntaja m/instance
             :middleware [muuntaja/format-middleware
                          params/parameters-middleware]}})))
